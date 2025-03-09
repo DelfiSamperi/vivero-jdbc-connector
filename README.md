@@ -12,6 +12,8 @@ Pestaña Java Projects del panel izquierdo > opcion añadir en References Librar
 
 En el metodo main se configura la conexion a la db (App.java).
 
+
+
 ### Patrón de Diseño DAO (Data  Access Object)
 
 Es una herramienta clave para organizar y separar la lógica de acceso a datos de la lógica de negocio en tus proyectos.
