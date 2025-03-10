@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Scanner;
 import java.sql.SQLException;
 
 
@@ -15,6 +16,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         Connection conexion = getConnection();
         buscarClientes(conexion);
+        buscarClientesPorCodigo(conexion);
         cerrarConexion(conexion);
     }
 
@@ -79,14 +81,62 @@ public class App {
     
     // Realiza un método llamado buscarClientePorCodigo(codigo) que reciba como parámetro el código del cliente y muestre por pantalla 
     // los datos que tiene el cliente guardado en la base de datos. 
-    public static void buscarClientesPorCodigo() {
+    public static void buscarClientesPorCodigo(Connection conexion) {
+        System.out.println("Busca un cliente por codigo");
+        //String sql = "SELECT id_cliente, codigo_cliente, nombre_cliente, nombre_contacto, apellido_contacto, telefono, fax, ciudad, region, pais, codigo_postal, id_empleado, limite_credito FROM cliente ";
+        Scanner miScanner = new Scanner(System.in);
+        System.out.println("Ingrese código del cliente que desea buscar ");
+        int codigoCliente = miScanner.nextInt();
+        miScanner.close();
+        System.out.println("Buscando cliente de código " + codigoCliente);
+        String sql = "SELECT * FROM cliente WHERE codigo_cliente = " + codigoCliente; 
+        boolean encontrado = false;
 
+        try {
+            Statement stmt = conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            
+            while (rs.next()) {
+                //Int id_cliente = rs.getInt("id_cliente");
+                String nombreCliente = rs.getString("nombre_cliente");
+                String nombreContacto = rs.getString("nombre_contacto");
+                String apellidoContacto = rs.getString("apellido_contacto");
+                String telefono = rs.getString("telefono");
+                String fax = rs.getString("fax");
+                String ciudad = rs.getString("ciudad");
+                String region = rs.getString("region");
+                String pais = rs.getString("pais");
+                String codigo_postal = rs.getString("codigo_postal");
+                //Int id_empleado = rs.getInt("id_empleado");
+                Double limite_credito = rs.getDouble("limite_credito");
+
+                System.out.println(/*" ID de cliente: ", id_cliente + */
+                                "\nNombre Cliente: " + nombreCliente +
+                                "\nNombre y Apellido de contacto: " + nombreContacto + " " + apellidoContacto +
+                                "\nTeléfono: " + telefono + " Fax: " + fax +
+                                "\n" + ciudad + ", " + region + ", " + pais + ". CP: " + codigo_postal + 
+                               /* "\nEmpleado asignado: " + id_empleado + */
+                                "\nLimite crediticio: " + limite_credito
+                );
+                encontrado = true;
+            }
+
+            if(!encontrado) {
+                System.out.println("No se encontro cliente con el codigo " + codigoCliente);
+            }
+
+            // Cerrar ResultSet y Statement dentro del bloque try-catch-finally
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            System.out.println("Error en la consulta: " + e.getMessage());
+        }
     }
 
     // Realiza un método llamado buscarClientesPorEmpleado(codigo) que reciba el código del empleado como parámetro y muestre todos 
     // los clientes asociados a un empleado en particular. Puedes elegir qué campos mostrar en tu método.
-    public static void buscarClientesPorEmpleado() {
-
+    public static void buscarClientesPorEmpleado(Connection conexion) {
+        System.out.println("Este metodo busca el cliente segun el codigo de empleado al que fue asignado");
     }
 
     //✏️ Actividad: Consultas en la tabla “Producto”
